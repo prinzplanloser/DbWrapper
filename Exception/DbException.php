@@ -1,5 +1,6 @@
 <?php
-namespace MyProject\Exceptions;
+
+namespace Exceptions\DbException;
 
 class DbException extends \Exception
 {
