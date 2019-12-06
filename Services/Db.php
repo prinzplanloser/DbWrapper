@@ -2,7 +2,7 @@
 
 namespace Services\Db;
 
-use MyProject\Exceptions\DbException;
+use Exceptions\DbException;
 
 class Db
 {
