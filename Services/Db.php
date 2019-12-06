@@ -66,7 +66,7 @@ class Db
             echo $e->getMessage();
         }
         $this->result = array_filter($this->result);
-        return $this->result = array_filter($this->result);
+        return $this->result;
     }
 }
 ##### Пример
