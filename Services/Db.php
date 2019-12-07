@@ -69,6 +69,9 @@ class Db
         return $this->result;
     }
 }
+
+$builder = new QueryBuilder();
+$builder->insert()->select()->where()->execute();
 ##### Пример
 $db = new Db();
 $result = $db->transactionElement('INSERT INTO `categories`(`id`, `name`) VALUES (:id,:name)', ['id' => 400, 'name' => 'idiot'])
