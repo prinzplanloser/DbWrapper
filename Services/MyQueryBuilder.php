@@ -3,7 +3,6 @@
 
 namespace Services\Db;
 
-
 class MyQueryBuilder
 {
     private $sql;
@@ -13,6 +12,11 @@ class MyQueryBuilder
      * @var \PDO
      */
     private $pdo;
+    /**
+     * @var \PDOStatement $content
+     *
+     */
+    private $content;
 
     public function __construct(\PDO $pdo)
     {
@@ -111,20 +115,25 @@ class MyQueryBuilder
     public function execute()
     {
         if (empty($this->params)) {
-            $result = $this->executeWithoutParams();
-            return $result;
+            $this->executeWithoutParams();
+            return $this;
         } else {
-            $result = $this->executeWithParams();
-            return $result;
+            $this->executeWithParams();
+            return $this;
         }
+    }
+
+    public function fetch($fetchMethod = null)
+    {
+        $result = $this->content->fetchAll($fetchMethod);
+        return $result;
     }
 
     private function executeWithoutParams()
     {
         $sql = implode(' ', $this->sql);
-        $result = $this->pdo->query($sql);
-        $content = $result->fetchAll(\PDO::FETCH_ASSOC);
-        return $content;
+        $sth = $this->pdo->query($sql);
+        $this->content = $sth;
     }
 
     private function executeWithParams()
@@ -133,9 +142,9 @@ class MyQueryBuilder
         $sql = implode(' ', $this->sql);
         $sth = $this->pdo->prepare($sql);
         $sth->execute($params);
-
-        return $sth->fetchAll(\PDO::FETCH_ASSOC);
+        $this->content = $sth;
     }
+
 }
 
 ### Пример
@@ -149,6 +158,7 @@ $pdo = new \PDO(
 $pdo->exec('SET NAMES UTF8');
 
 $newBuilder = new MyQueryBuilder($pdo);
-$result = $newBuilder->insert('categories', 'id', 'name')->values(':id', ':name')->bindParams(['id' => 200, 'name' => 'Петр'])->execute();
+//$result = $newBuilder->insert('categories', 'id', 'name')->values(':id', ':name')->bindParams(['id' => 200, 'name' => 'Петр'])->execute();
+//$result = $newBuilder->select('*')->from('categories')->execute()->fetch(\PDO::FETCH_ASSOC);
 var_dump($result);
 
